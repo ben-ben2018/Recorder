@@ -76,7 +76,7 @@
 
 <!-- 【3】实现录音逻辑  Implement recording logic -->
 <script>
-var rec,processTime,wave,recBlob;
+var rec,processTime,wave,recBlob,powerLevelList=[];
 /**调用open打开录音请求好录音权限  Call open to open the recording and request the recording permission**/
 var recOpen=function(){//一般在显示出录音按钮或相关的录音界面时进行此方法调用，后面用户点击开始录音时就能畅通无阻了
 	rec=null;
@@ -89,7 +89,7 @@ var recOpen=function(){//一般在显示出录音按钮或相关的录音界面�
 			document.querySelector(".recpowerx").style.width=powerLevel+"%";
 			document.querySelector(".recpowert").innerText=formatMs(bufferDuration,1)+" / "+powerLevel;
 			processTime=Date.now();
-			
+			powerLevelList.push(powerLevel)
 			//可视化图形绘制
 			wave.input(buffers[buffers.length-1],powerLevel,bufferSampleRate);
 		}
@@ -175,7 +175,9 @@ function recStop(){
 		console.log(blob,(window.URL||webkitURL).createObjectURL(blob),Html_xT(Html_$T("gOix::时长:{1}ms",0,duration)));
 		
 		recBlob=blob;
-		reclog(Html_$T("0LHf::已录制mp3：{1}ms {2}字节，可以点击播放、上传、本地下载了",0,formatMs(duration),blob.size),2);
+		reclog(Html_$T("0LHf::已录制mp3：{1}ms {2}字节，可以点击播放、本地下载了",0,formatMs(duration),blob.size),2);
+		reclog(Html_$T(`powerLevelList:${powerLevelList.join(",")}`))
+		powerLevelList = []
 	},function(msg){
 		reclog(Html_$T("kGZO::录音失败:")+msg,1);
 	});
@@ -380,4 +382,5 @@ a:hover{
 </body>
 
 </html>
+
 
